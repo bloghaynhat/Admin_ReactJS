@@ -1,12 +1,10 @@
+import RootPage from "./RootLayout/RootPage"
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      
-    </>
+      <RootPage/>
   )
 }
 
