@@ -61,9 +61,9 @@ const RootPage = () => {
                     </div>
                 </div>
                 <div className=' bg-blue-400 '>
-                    <h2>Over view</h2>
+                    <div className='font-bold text-2xl'>Over view</div>
 
-                    <div className='flex w-full justify-evenly'>
+                    <div className='flex w-full justify-evenly mt-6'>
                         {dataOverview.map((item) => {
                             return <OverviewItem title={item.title} number={item.number} percent={item.percent} icon={item.icon}/>
                         })}
