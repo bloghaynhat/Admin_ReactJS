@@ -1,7 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "../RootLayout/RootPage.css"
+import OverviewItem from './OverviewItem';
 
 const RootPage = () => {
+    const [dataOverview, setdataOverview] = useState([]);
+    useEffect(() => {
+    // Hàm fetch dữ liệu từ API
+    const fetchData = async () => {
+        try {
+          // Gọi API
+          const response = await fetch('https://67c7c637c19eb8753e7ab0ce.mockapi.io/Overview');
+          // Kiểm tra nếu response không ok
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          // Chuyển đổi phản hồi sang JSON
+          const result = await response.json();
+          
+          // Cập nhật dữ liệu vào state
+          setdataOverview(result);
+        } catch(error){
+            console.log(error);
+        }
+
+        fetchData();
+      };
+  
+      // Gọi hàm fetchData
+      fetchData();
+    }, [])
+
+
+
+
     return (
         <div className='container'>
             {/* Menu nè */}
@@ -33,10 +64,10 @@ const RootPage = () => {
                     <h2>Over view</h2>
 
                     <div className='flex w-full justify-evenly'>
-                        <div className='bg-gray-600 rounded-md px-10 py-4'>aaa</div>
-                        <div className='bg-gray-600 rounded-md px-10 py-4'>aaa</div>
-                        <div className='bg-gray-600 rounded-md px-10 py-4'>aaa</div>
-                        <div className='bg-gray-600 rounded-md px-10 py-4'>aaa</div>
+                        {dataOverview.map((item) => {
+                            return <OverviewItem title={item.title} number={item.number} percent={item.percent} icon={item.icon}/>
+                        })}
+                    
                     </div>
                 </div>
                 <div className=' bg-blue-400 border'>
