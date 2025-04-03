@@ -1,4 +1,4 @@
-import RootPage from "./RootLayout/RootPage"
+import RootPage from "./components/RootLayout/RootPage.jsx"
 
 
 function App() {
