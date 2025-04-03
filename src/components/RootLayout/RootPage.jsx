@@ -50,11 +50,15 @@ const RootPage = () => {
       {/* Đây là bên phải */}
       <div className="content">
         {/* Thanh header nè */}
-        <div className=" bg-blue-400 flex justify-between">
-          <h1>Dashboard</h1>
+        <div className=" bg-blue-400 flex justify-between p-1">
+          <div className="text-[#f5538d] font-bold text-2xl">Dashboard</div>
 
           <div className="flex gap-1">
-            <input type="text" />
+            {/* Ô search */}
+            <div>
+<input type="text" />
+            </div>
+            
             <button></button>
             <h3>?</h3>
             <img src="" alt="" />
@@ -93,7 +97,7 @@ const RootPage = () => {
         </div>
 
         <div className=" bg-blue-400 border">
-          <DataTableNe/>
+          {/* <DataTableNe/> */}
         </div>
       </div>
     </div>
