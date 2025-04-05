@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./RootPage.css";
 import OverviewItem from "./OverviewItem";
 import DataTableNe from "../DataTable/DataTableNe";
+import { Link } from "react-router-dom";
 
 const RootPage = () => {
   const [dataOverview, setdataOverview] = useState([]);
@@ -36,15 +37,32 @@ const RootPage = () => {
   return (
     <div className="container">
       {/* Menu nè */}
-      <div className="menu border-r-1 border-gray-400">
-        <h1>Logo</h1>
-        <div>
-          <ul>
-            <li>Menu 1</li>
-            <li>Menu 2</li>
-            <li>Menu 3</li>
-            <li>Menu 4</li>
-          </ul>
+      <div className="menu border-r-1 border-gray-400 p-4 flex flex-col justify-between">
+        {/* Logo + Navlink */}
+        <div className="">
+          <img src="/src/assets/Image 1858.png" alt="" />
+          <div>
+            <ul className="flex flex-col gap-y-5 mt-6 [&>li]:p-2 [&>li]:rounded-lg font-bold ">
+              <li>
+                <Link to="">Dashboard</Link>{" "}
+              </li>
+              <li>Project</li>
+              <li>
+                <Link to="/teams">Teams</Link>
+              </li>
+              <li>Analytics</li>
+              <li>Messages</li>
+              <li>Integration</li>
+            </ul>
+          </div>
+        </div>
+        {/* Img ben duoi */}
+        <div className="flex flex-col justify-center items-center bg-[#f0f6ff] p-4 rounded-md">
+          <img src="/src/assets/Group.png" alt="" />
+          <p className="font-bold text-2xl my-3">V2.0 is available</p>
+          <button className="bg-white rounded-md border border-blue-600 text-blue-600 w-full">
+            Try now
+          </button>
         </div>
       </div>
       {/* Đây là bên phải */}
@@ -189,7 +207,6 @@ const RootPage = () => {
             </div>
           </div>
           <DataTableNe />
-          HIHI
         </div>
       </div>
     </div>
