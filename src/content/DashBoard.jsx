@@ -1,5 +1,5 @@
 import React from "react";
-import DataTableNe from "../../components/DataTable/DataTableNe";
+import DataTableNe from "../components/DataTable/DataTableNe";
 
 const DashBoard = () => {
   return (

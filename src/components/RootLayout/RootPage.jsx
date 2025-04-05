@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./RootPage.css";
 import OverviewItem from "./OverviewItem";
 import { NavLink, Routes, Route } from "react-router-dom";
-import DashBoard from "../../assets/content/DashBoard";
-import Teams from "../../assets/content/Teams";
-import Project from "../../assets/content/Project";
-import Analytics from "../../assets/content/Analytics";
-import Messages from "../../assets/content/Message";
-import Integration from "../../assets/content/Integration";
+import DashBoard from "../../content/DashBoard";
+import Teams from "../../content/Teams";
+import Project from "../../content/Project";
+import Analytics from "../../content/Analytics";
+import Messages from "../../content/Message";
+import Integration from "../../content/Integration";
 
 const RootPage = () => {
   const [dataOverview, setDataOverview] = useState([]);

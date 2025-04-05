@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import MyModal from "../MyModal/MyModal";
 
 const DataTableNe = () => {
   const [data, setData] = useState([]);
@@ -27,6 +28,8 @@ const DataTableNe = () => {
     // Gọi hàm fetchData
     fetchData();
   }, []);
+
+  const [modalShow, setModalShow] = useState(false);
 
   const statuses = ["New", "In-progress", "Completed"];
 
@@ -125,6 +128,7 @@ const DataTableNe = () => {
             strokeWidth={1.5}
             stroke="currentColor"
             className="size-5 cursor-pointer"
+            onClick={() => setModalShow(true)}
           >
             <path
               strokeLinecap="round"
@@ -140,15 +144,23 @@ const DataTableNe = () => {
     },
   ];
   return (
-    <div className="mt-5">
-      <DataTable
-        columns={columns}
-        data={data}
-        customStyles={customStyles}
-        pagination
-        selectableRows
+    <>
+      <div className="mt-5">
+        <DataTable
+          columns={columns}
+          data={data}
+          customStyles={customStyles}
+          pagination
+          selectableRows
+        />
+      </div>
+      {/* Sử dụng MyModal */}
+      <MyModal
+        isOpen={modalShow}
+        closeModal={() => setModalShow(false)}
+        content="Test"
       />
-    </div>
+    </>
   );
 };
 
