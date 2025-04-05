@@ -23,8 +23,6 @@ const DataTableNe = () => {
       } catch (error) {
         console.log(error);
       }
-
-      fetchData();
     };
     // Gọi hàm fetchData
     fetchData();
