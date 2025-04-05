@@ -1,11 +1,14 @@
-import RootPage from "./components/RootLayout/RootPage.jsx"
-
+import RootPage from "./components/RootLayout/RootPage.jsx";
+import Teams from "./components/Teams/Teams.jsx";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-
   return (
-      <RootPage/>
-  )
+    <Routes>
+      <Route path="/" element={<RootPage />} />
+      <Route path="/teams" element={<Teams />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
