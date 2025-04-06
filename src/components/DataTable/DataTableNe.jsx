@@ -4,6 +4,10 @@ import MyModal from "../MyModal/MyModal";
 
 const DataTableNe = () => {
   const [data, setData] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const [selectRow, setSelectRow] = useState(null);
+  const [modalMode, setModalMode] = useState("edit"); // State cho modal mode ("edit" hoặc "add")
+
   // Hàm fetch dữ liệu từ API
   const fetchData = async () => {
     try {
@@ -24,16 +28,21 @@ const DataTableNe = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
-    // Gọi hàm fetchData
+    // Gọi hàm fetchData khi component mount
     fetchData();
   }, []);
 
-  const [modalShow, setModalShow] = useState(false);
-  const [selectRow, setSelectRow] = useState(null);
   const openModal = (row) => {
     setSelectRow(row);
-    console.log(row);
+    setModalMode("edit"); // Chuyển sang chế độ sửa khi mở modal chỉnh sửa
+    setModalShow(true);
+  };
+
+  const openAddModal = () => {
+    setSelectRow(null); // Khi mở modal thêm, không có dữ liệu chọn
+    setModalMode("add"); // Chuyển sang chế độ thêm mới
     setModalShow(true);
   };
 
@@ -156,7 +165,15 @@ const DataTableNe = () => {
   ];
   return (
     <>
-      <div className="mt-5">
+      <div className="mt-5 flex flex-col gap-2">
+        <div className=" flex justify-end pr-4">
+          <button
+            className="text-white font-bold bg-[#f44b87] border-[1.5px] flex items-center gap-1"
+            onClick={openAddModal}
+          >
+            +
+          </button>
+        </div>
         <DataTable
           columns={columns}
           data={data}
@@ -171,7 +188,8 @@ const DataTableNe = () => {
         isOpen={modalShow}
         closeModal={closeModal}
         content={selectRow}
-        onUpdate={() => fetchData()}
+        onUpdate={() => fetchData()} // Cập nhật lại bảng sau khi thêm/sửa
+        mode={modalMode} // Truyền mode cho modal ("add" hoặc "edit")
       />
     </>
   );

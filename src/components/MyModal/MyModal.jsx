@@ -20,19 +20,32 @@ const customStyles = {
   },
 };
 Modal.setAppElement("#root");
-const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
-  const [formData, setFormData] = useState(content);
+
+const MyModal = ({ isOpen, closeModal, content, onUpdate, mode = "edit" }) => {
+  const [formData, setFormData] = useState(
+    mode === "edit"
+      ? content
+      : {
+          name: "",
+          company: "",
+          orderValue: "",
+          orderDate: "",
+          status: "New",
+          avatar: "",
+        }
+  );
+
   const statuses = ["New", "In-progress", "Completed"];
+
   // Cập nhật state khi modal mở và nhận dữ liệu mới
   useEffect(() => {
-    if (content && content.status) {
-      const statusIndex = parseInt(content.status, 10) % 3; // Đảm bảo là số
+    if (mode === "edit" && content) {
       setFormData({
         ...content,
-        status: statuses[statusIndex] || "Unknown", // Nếu không có chỉ số hợp lệ, dùng "Unknown"
+        status: statuses[parseInt(content.status, 10) % 3] || "New",
       });
     }
-  }, [content]);
+  }, [content, mode]);
 
   const handleInputChange = (field, value) => {
     if (field === "status") {
@@ -47,6 +60,11 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
         ...formData,
         status: statusValue,
       });
+    } else if (field === "orderDate" && value) {
+      setFormData({
+        ...formData,
+        orderDate: new Date(value).toISOString(), // Đảm bảo orderDate là chuỗi ISO
+      });
     } else {
       setFormData({
         ...formData,
@@ -58,6 +76,23 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
   // API PUT
   const handleSave = async () => {
     try {
+      // Kiểm tra formData và đảm bảo các trường có giá trị hợp lệ
+      if (
+        !formData.name ||
+        !formData.company ||
+        !formData.orderDate ||
+        !formData.orderValue
+      ) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const updatedData = {
+        ...formData,
+        orderValue: parseInt(formData.orderValue, 10) || 0, // Chuyển orderValue sang số
+        status: parseInt(formData.status, 10), // Chuyển status sang số
+      };
+
       const response = await fetch(
         `https://67e369142ae442db76d0029b.mockapi.io/dttb/${formData.id}`,
         {
@@ -65,7 +100,7 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(updatedData),
         }
       );
 
@@ -73,15 +108,80 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
         throw new Error("Cập nhật không thành công");
       }
 
-      const updatedData = await response.json();
-      console.log("Cập nhật thành công:", updatedData);
+      const data = await response.json();
+      console.log("Cập nhật thành công:", data);
 
-      // Đóng modal sau khi cập nhật
+      // Đóng modal và cập nhật bảng dữ liệu
       closeModal();
       onUpdate?.();
-      // TODO: Gọi callback để cập nhật lại bảng dữ liệu nếu cần
     } catch (error) {
       console.error("Lỗi cập nhật:", error);
+    }
+  };
+
+  // API POST
+  const handleAddCustomer = async () => {
+    try {
+      // Kiểm tra formData và đảm bảo các trường có giá trị hợp lệ
+      if (
+        !formData.name ||
+        !formData.company ||
+        !formData.orderDate ||
+        !formData.orderValue
+      ) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      // Chuyển đổi status thành số
+      const statusMap = {
+        New: 0,
+        "In-progress": 1,
+        Completed: 2,
+      };
+      const statusNumber = statusMap[formData.status] || 0;
+
+      // Đảm bảo orderDate là đối tượng Date và chuyển thành ISO string
+      const orderDate = new Date(formData.orderDate);
+      if (isNaN(orderDate)) {
+        alert("Invalid order date.");
+        return;
+      }
+
+      // Chuyển đổi orderValue sang số, kiểm tra NaN
+      const orderValue = parseInt(formData.orderValue, 10);
+      if (isNaN(orderValue)) {
+        alert("Invalid order value.");
+        return;
+      }
+
+      const response = await fetch(
+        "https://67e369142ae442db76d0029b.mockapi.io/dttb",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            avatar: formData.avatar || "",
+            company: formData.company,
+            name: formData.name,
+            orderDate: orderDate.toISOString(),
+            orderValue: orderValue, // Đảm bảo là số
+            status: statusNumber, // Gửi status dưới dạng số
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Thêm mới không thành công");
+
+      const addedData = await response.json();
+      console.log("Thêm mới thành công:", addedData);
+
+      closeModal();
+      onUpdate?.(); // Cập nhật lại bảng dữ liệu nếu cần
+    } catch (error) {
+      console.error("Lỗi thêm mới khách hàng:", error);
     }
   };
 
@@ -93,7 +193,7 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
       style={customStyles}
     >
       <h2 className="text-3xl font-bold mb-4 border-b-2 pb-2 ">
-        EDIT CUSTOMER INFORMATION
+        {mode === "edit" ? "EDIT CUSTOMER INFORMATION" : "ADD CUSTOMER"}
       </h2>
       <form
         action=""
@@ -104,6 +204,9 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
           <input
             type="file"
             className="border-2 border-gray-300 rounded-lg py-1 px-2"
+            onChange={(e) =>
+              handleInputChange("avatar", e.target.files[0]?.name || "")
+            }
           />
         </div>
         <div className="gap-2 flex flex-col">
@@ -145,7 +248,9 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
             <input
               type="date"
               className="border-2 border-gray-300 rounded-lg py-1 px-2 text-black"
-              value={formData?.orderDate?.split("T")[0] || ""}
+              value={
+                formData?.orderDate ? formData.orderDate.split("T")[0] : ""
+              } // Đảm bảo rằng orderDate là chuỗi
               onChange={(e) =>
                 setFormData({ ...formData, orderDate: e.target.value })
               }
@@ -175,12 +280,21 @@ const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
         >
           Đóng
         </button>
-        <button
-          onClick={handleSave}
-          className="bg-green-500 text-white py-2 px-6 rounded-lg"
-        >
-          Lưu
-        </button>
+        {mode === "edit" ? (
+          <button
+            onClick={handleSave}
+            className="bg-green-500 text-white py-2 px-6 rounded-lg"
+          >
+            Lưu
+          </button>
+        ) : (
+          <button
+            onClick={handleAddCustomer}
+            className="bg-green-500 text-white py-2 px-6 rounded-lg"
+          >
+            Thêm
+          </button>
+        )}
       </div>
     </Modal>
   );
