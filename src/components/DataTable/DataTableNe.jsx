@@ -4,32 +4,43 @@ import MyModal from "../MyModal/MyModal";
 
 const DataTableNe = () => {
   const [data, setData] = useState([]);
-  useEffect(() => {
-    // Hàm fetch dữ liệu từ API
-    const fetchData = async () => {
-      try {
-        // Gọi API
-        const response = await fetch(
-          "https://67e369142ae442db76d0029b.mockapi.io/dttb"
-        );
-        // Kiểm tra nếu response không ok
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        // Chuyển đổi phản hồi sang JSON
-        const result = await response.json();
-
-        // Cập nhật dữ liệu vào state
-        setData(result);
-      } catch (error) {
-        console.log(error);
+  // Hàm fetch dữ liệu từ API
+  const fetchData = async () => {
+    try {
+      // Gọi API
+      const response = await fetch(
+        "https://67e369142ae442db76d0029b.mockapi.io/dttb"
+      );
+      // Kiểm tra nếu response không ok
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
+      // Chuyển đổi phản hồi sang JSON
+      const result = await response.json();
+
+      // Cập nhật dữ liệu vào state
+      setData(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     // Gọi hàm fetchData
     fetchData();
   }, []);
 
   const [modalShow, setModalShow] = useState(false);
+  const [selectRow, setSelectRow] = useState(null);
+  const openModal = (row) => {
+    setSelectRow(row);
+    console.log(row);
+    setModalShow(true);
+  };
+
+  const closeModal = () => {
+    setModalShow(false);
+    setSelectRow(null);
+  };
 
   const statuses = ["New", "In-progress", "Completed"];
 
@@ -119,7 +130,7 @@ const DataTableNe = () => {
       },
     },
     {
-      cell: () => (
+      cell: (row) => (
         <span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +139,7 @@ const DataTableNe = () => {
             strokeWidth={1.5}
             stroke="currentColor"
             className="size-5 cursor-pointer"
-            onClick={() => setModalShow(true)}
+            onClick={() => openModal(row)}
           >
             <path
               strokeLinecap="round"
@@ -156,9 +167,11 @@ const DataTableNe = () => {
       </div>
       {/* Sử dụng MyModal */}
       <MyModal
+        key={selectRow?.id}
         isOpen={modalShow}
-        closeModal={() => setModalShow(false)}
-        content="Test"
+        closeModal={closeModal}
+        content={selectRow}
+        onUpdate={() => fetchData()}
       />
     </>
   );

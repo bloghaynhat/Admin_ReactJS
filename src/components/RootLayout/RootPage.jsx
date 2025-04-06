@@ -158,7 +158,7 @@ const RootPage = () => {
   ];
 
   return (
-    <div className="container">
+    <div className="container border-[0.5px]">
       {/* Sidebar */}
       <div className="menu border-r border-gray-300 p-4 flex flex-col justify-between">
         <div>

@@ -20,13 +20,71 @@ const customStyles = {
   },
 };
 Modal.setAppElement("#root");
-const MyModal = ({ isOpen, closeModal, content }) => {
+const MyModal = ({ isOpen, closeModal, content, onUpdate }) => {
   const [formData, setFormData] = useState(content);
-
+  const statuses = ["New", "In-progress", "Completed"];
   // Cập nhật state khi modal mở và nhận dữ liệu mới
   useEffect(() => {
-    setFormData(content);
+    if (content && content.status) {
+      const statusIndex = parseInt(content.status, 10) % 3; // Đảm bảo là số
+      setFormData({
+        ...content,
+        status: statuses[statusIndex] || "Unknown", // Nếu không có chỉ số hợp lệ, dùng "Unknown"
+      });
+    }
   }, [content]);
+
+  const handleInputChange = (field, value) => {
+    if (field === "status") {
+      const statusValue =
+        {
+          New: 0,
+          "In-progress": 1,
+          Completed: 2,
+        }[value] ?? 0;
+
+      setFormData({
+        ...formData,
+        status: statusValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
+  };
+
+  // API PUT
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        `https://67e369142ae442db76d0029b.mockapi.io/dttb/${formData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Cập nhật không thành công");
+      }
+
+      const updatedData = await response.json();
+      console.log("Cập nhật thành công:", updatedData);
+
+      // Đóng modal sau khi cập nhật
+      closeModal();
+      onUpdate?.();
+      // TODO: Gọi callback để cập nhật lại bảng dữ liệu nếu cần
+    } catch (error) {
+      console.error("Lỗi cập nhật:", error);
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -54,6 +112,8 @@ const MyModal = ({ isOpen, closeModal, content }) => {
             type="text"
             className="border-2 border-gray-300 rounded-lg py-1 px-2"
             placeholder="Enter name"
+            value={formData?.name || ""}
+            onChange={(e) => handleInputChange("name", e.target.value)}
           />
         </div>
 
@@ -63,6 +123,8 @@ const MyModal = ({ isOpen, closeModal, content }) => {
             type="text"
             className="border-2 border-gray-300 rounded-lg py-1 px-2"
             placeholder="Enter company"
+            value={formData?.company || ""}
+            onChange={(e) => handleInputChange("company", e.target.value)}
           />
         </div>
 
@@ -72,6 +134,8 @@ const MyModal = ({ isOpen, closeModal, content }) => {
             type="text"
             className="border-2 border-gray-300 rounded-lg py-1 px-2"
             placeholder="Enter order value"
+            value={formData?.orderValue || ""}
+            onChange={(e) => handleInputChange("orderValue", e.target.value)}
           />
         </div>
 
@@ -81,6 +145,10 @@ const MyModal = ({ isOpen, closeModal, content }) => {
             <input
               type="date"
               className="border-2 border-gray-300 rounded-lg py-1 px-2 text-black"
+              value={formData?.orderDate?.split("T")[0] || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, orderDate: e.target.value })
+              }
             />
           </div>
 
@@ -90,20 +158,28 @@ const MyModal = ({ isOpen, closeModal, content }) => {
               name=""
               id=""
               className="border-2 border-gray-300 rounded-lg py-1 px-2"
+              value={formData?.status || "New"} // Giá trị mặc định là "New"
+              onChange={(e) => handleInputChange("status", e.target.value)}
             >
               <option value="Completed">Completed</option>
               <option value="New">New</option>
-              <option value="In-progress">In</option>
+              <option value="In-progress">In-progress</option>
             </select>
           </div>
         </div>
       </form>
-      <div className="mt-8 border-t-2 pt-3 flex justify-end">
+      <div className="mt-8 border-t-2 pt-3 flex justify-end gap-2">
         <button
           onClick={closeModal}
-          className="bg-blue-500 text-white py-2 px-6 rounded-lg"
+          className="bg-red-500 text-white py-2 px-6 rounded-lg"
         >
           Đóng
+        </button>
+        <button
+          onClick={handleSave}
+          className="bg-green-500 text-white py-2 px-6 rounded-lg"
+        >
+          Lưu
         </button>
       </div>
     </Modal>
