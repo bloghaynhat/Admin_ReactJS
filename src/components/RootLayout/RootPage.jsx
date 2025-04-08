@@ -172,7 +172,7 @@ const RootPage = () => {
                     `flex items-center gap-2 p-3 rounded ${
                       isActive
                         ? "bg-[#f44b87] text-white font-bold"
-                        : "hover:bg-gray-700 text-black"
+                        : "hover:bg-[#fa8bb2] hover:text-white text-black"
                     }`
                   }
                 >
@@ -188,7 +188,7 @@ const RootPage = () => {
         <div className="flex flex-col justify-center items-center bg-[#f0f6ff] p-4 rounded-md">
           <img src="/src/assets/Group.png" alt="Update" />
           <p className="font-bold text-2xl my-3">V2.0 is available</p>
-          <button className="bg-white rounded-md border border-blue-600 text-blue-600 w-full">
+          <button className="bg-white rounded-md border border-blue-600 text-blue-600 w-full transition duration-300 ease-in-out hover:bg-blue-600 hover:text-white">
             Try now
           </button>
         </div>
@@ -197,10 +197,10 @@ const RootPage = () => {
       {/* Main Content */}
       <div className="content">
         {/* Header */}
-        <div className="border-b border-gray-300 flex justify-between p-2 gap-2">
+        <div className="border-b border-gray-300 flex justify-between px-4 py-3 gap-2">
           <div className="text-[#f5538d] font-bold text-2xl">Dashboard</div>
 
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-3 items-center ">
             <div className="bg-[#f3f4f6] px-2 py-0.5 flex gap-1 text-black items-center rounded-lg w-[300px] transition-all duration-300 focus-within:outline-1 focus-within:outline-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -223,30 +223,41 @@ const RootPage = () => {
               />
             </div>
 
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-5 h-5 text-black mx-2"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206 23.18 23.18 0 0 1-4.831 1.243 3.75 3.75 0 1 1-7.48 0A23.18 23.18 0 0 1 3.429 16.475a.75.75 0 0 1-.297-1.205A8.217 8.217 0 0 0 5.25 9.75V9Z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <div className="relative inline-block">
+              {/* Ping Effect */}
+              <span className="absolute top-0 right-0 inline-flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#e84f85] opacity-75 animate-ping"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#e84f85]"></span>
+              </span>
 
-            <h3 className="font-bold text-2xl text-black ml-2 mr-4">?</h3>
+              {/* Your SVG */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5 text-black cursor-pointer"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206 23.18 23.18 0 0 1-4.831 1.243 3.75 3.75 0 1 1-7.48 0A23.18 23.18 0 0 1 3.429 16.475a.75.75 0 0 1-.297-1.205A8.217 8.217 0 0 0 5.25 9.75V9Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <h3 className="font-bold text-2xl text-black ml-2 mr-4 cursor-pointer">
+              ?
+            </h3>
             <img
               src="/src/assets/Avatar 313.png"
               alt="Avatar"
-              className="rounded-full w-8 h-8"
+              className="rounded-full w-8 h-8 cursor-pointer"
             />
           </div>
         </div>
 
         {/* Overview Section */}
-        <div className="p-1">
+        <div className="px-4 py-1">
           <div className="flex gap-2 items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +274,7 @@ const RootPage = () => {
             <div className="font-bold text-2xl">Overview</div>
           </div>
 
-          <div className="flex w-full justify-evenly mt-6">
+          <div className="flex gap-4 w-full justify-evenly mt-6">
             {dataOverview.map((item, index) => (
               <OverviewItem
                 key={item.title}
@@ -278,7 +289,7 @@ const RootPage = () => {
         </div>
 
         {/* Page Routing */}
-        <div className="mt-10">
+        <div className="mt-10 px-4 py-1">
           <Routes>
             <Route path="/" element={<DashBoard />} />
             <Route path="/project" element={<Project />} />

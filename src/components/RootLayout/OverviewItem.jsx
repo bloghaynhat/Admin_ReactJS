@@ -7,8 +7,8 @@ const OverviewItem = ({ title, number, percent, icon, colorIndex }) => {
   return (
     <div
       className={`${
-        colorIndex !== 2 ? "bg-[#fef0f5]" : "bg-[#f1f8fd]"
-      } py-3 px-5 w-[340px] rounded-lg relative `}
+        colorIndex !== 2 ? "bg-[#fadbe6]" : "bg-[#d7e1e9]"
+      } py-3 px-5 w-[340px] rounded-lg relative flex-1`}
     >
       <h3 className="font-bold text-black">{title}</h3>
       <h2 className="font-bold text-4xl mt-2 text-black">
